@@ -148,7 +148,7 @@ You can explore the full API docs via Swagger:
 ## 🧑‍💻 Author
 
 **Sumit Shaw**  
-[GitHub](https://github.com/sumitkshaw) · [LinkedIn](https://www.linkedin.com/in/sumitkshaw)
+[GitHub](https://github.com/sumitkshaw) · [LinkedIn](https://www.linkedin.com/in/sumitshaw27)
 
 ---
 
