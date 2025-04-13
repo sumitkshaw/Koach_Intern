@@ -1,17 +1,17 @@
 {
   "compilerOptions": {
-    "target": "es2016",
-    "rootDir": "./src",
-    "outDir": "./dist",
+    "target": "es6",
     "module": "commonjs",
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true,
-    "types": ["node", "express"],
-    "forceConsistentCasingInFileNames": true,
-    "typeRoots": ["./node_modules/@types", "./types"],
+    "allowJs": true,
     "strict": true,
-    "skipLibCheck": true
-  }
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "types": ["node", "jest"]  // Make sure jest is here
+  },
+  "include": [
+    "src/**/*.ts",  // Ensure all source files are included
+    "tests/**/*.ts" // Make sure test files are included
+  ]
 }

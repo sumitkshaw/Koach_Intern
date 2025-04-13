@@ -1,43 +1,46 @@
-import { Request, Response } from 'express';
+import { Request, Response} from 'express';
 import User from '../models/userModel';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 // User registration
-export const registerUser = async (req: Request, res: Response) => {
-  const { name, email, password } = req.body;
+export const registerUser = async (req: Request, res: Response): Promise<void> =>{
+  const {name, email, password} = req.body;
 
   try {
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({email});
     if (existingUser) {
-      return res.status(400).json({ message: 'User already exists' });
+      res.status(400).json({message: 'User already exists'});
+      return;
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ name, email, password: hashedPassword });
+    const newUser = new User({name, email, password: hashedPassword});
     await newUser.save();
 
-    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
+    const token = jwt.sign({id: newUser._id}, process.env.JWT_SECRET as string, { expiresIn: '1h'});
 
-    res.status(201).json({ token });
+    res.status(201).json({token});
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({message: 'Server error' });
   }
 };
 
 // User login
-export const loginUser = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+export const loginUser = async (req: Request, res: Response):Promise<void> =>{
+  const {email, password} = req.body;
 
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: 'User not found' });
+      res.status(400).json({ message: 'User not found' });
+      return;
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid credentials' });
+      res.status(400).json({ message: 'Invalid credentials' });
+      return;
     }
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
@@ -49,11 +52,12 @@ export const loginUser = async (req: Request, res: Response) => {
 };
 
 // Get user profile
-export const getUserProfile = async (req: Request, res: Response) => {
+export const getUserProfile = async (req: Request, res: Response): Promise<void> => {
   try {
-    const user = await User.findById(req.userId);  // userId is set by the verifyToken middleware
+    const user = await User.findById(req.userId); 
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      res.status(404).json({ message: 'User not found' });
+      return;
     }
 
     res.status(200).json({ user });
@@ -63,13 +67,14 @@ export const getUserProfile = async (req: Request, res: Response) => {
 };
 
 // Update user profile
-export const updateUserProfile = async (req: Request, res: Response) => {
+export const updateUserProfile = async (req: Request, res: Response): Promise<void> => {
   const { name, email, password } = req.body;
 
   try {
     const user = await User.findById(req.userId);
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      res.status(404).json({ message: 'User not found' });
+      return;
     }
 
     if (password) {
@@ -87,11 +92,12 @@ export const updateUserProfile = async (req: Request, res: Response) => {
 };
 
 // Delete user profile
-export const deleteUserProfile = async (req: Request, res: Response) => {
+export const deleteUserProfile = async (req: Request, res: Response): Promise<void> => {
   try {
     const user = await User.findByIdAndDelete(req.userId);
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      res.status(404).json({ message: 'User not found' });
+      return;
     }
 
     res.status(200).json({ message: 'Profile deleted successfully' });
@@ -99,4 +105,3 @@ export const deleteUserProfile = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
-
